@@ -27,6 +27,41 @@ const screens = [
 
 const $ = (id) => document.getElementById(id);
 
+function getTagType(label = "") {
+  if (label.includes("语音")) return "voice";
+  if (label.includes("推理")) return "reason";
+  if (label.includes("工具")) return "tool";
+  if (label.includes("Agent") || label.includes("百炼")) return "agent";
+  if (label.includes("视频")) return "video";
+  if (label.includes("图像") || label.includes("视觉") || label.includes("万相")) return "image";
+  if (label.includes("工作流")) return "flow";
+  if (label.includes("文本") || label.includes("文案")) return "text";
+  if (label.includes("多模态")) return "multi";
+  if (label.includes("代码") || label.includes("Coder")) return "code";
+  return "spark";
+}
+
+function iconSvg(type) {
+  const icons = {
+    voice: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a3.5 3.5 0 0 0-3.5 3.5v4a3.5 3.5 0 1 0 7 0v-4A3.5 3.5 0 0 0 12 4Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3M9 20h6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></svg>`,
+    reason: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 4.5 7.2v5.6c0 4.2 3 7.9 7.2 8.8l.3.1.3-.1c4.2-.9 7.2-4.6 7.2-8.8V7.2L12 3.5Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="m9.5 12 1.7 1.7L14.8 10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></svg>`,
+    tool: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4H7zM13 13h4v4h-4zM7 13h4v4H7zM13 7h4v4h-4z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="M11 9h2M9 11v2M15 11v2M11 15h2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>`,
+    agent: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 4.5h13a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="M7.5 8h9M7.5 12h9M10 16h4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>`,
+    video: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7.5h8a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="m16 10 4-2v8l-4-2" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/></svg>`,
+    image: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m7.5 15 3-3 2.5 2.5 2-2 1.5 2.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/><circle cx="9" cy="9.2" r="1.1" fill="currentColor"/></svg>`,
+    flow: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6h4v4H7zM13 14h4v4h-4zM7 14h4v4H7z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/><path d="M11 8h4M9 10v4M11 16h2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>`,
+    text: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M9 7v10M15 7v10M7 17h10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>`,
+    multi: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="16" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="16" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10.4 10.2 11.5 13M13.6 10.2 12.5 13" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.8"/></svg>`,
+    code: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 8-4 4 4 4M15 8l4 4-4 4M13 6l-2 12" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/></svg>`,
+    spark: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.8"/></svg>`
+  };
+  return icons[type] || icons.spark;
+}
+
+function renderIconTag(label) {
+  return `<span class="icon-tag"><span class="tag-icon">${iconSvg(getTagType(label))}</span><span>${label}</span></span>`;
+}
+
 const flowGroups = $("flow-groups");
 const flowList = $("flow-list");
 const screenFlow = $("screen-flow");
@@ -342,14 +377,14 @@ function renderScreen() {
   if (screenFlow) screenFlow.textContent = item.flow;
   if (screenTitle) screenTitle.textContent = `界面 ${item.no} · ${item.title}`;
   if (screenSummary) screenSummary.textContent = item.summary;
-  if (screenBadges) screenBadges.innerHTML = item.badges.map((badge) => `<span>${badge}</span>`).join("");
+  if (screenBadges) screenBadges.innerHTML = item.badges.map((badge) => renderIconTag(badge)).join("");
   if (screenCounter) screenCounter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(screens.length).padStart(2, "0")}`;
   if (phoneStatusTitle) phoneStatusTitle.textContent = item.status;
   if (phoneScreen) phoneScreen.innerHTML = mockTemplate(item.type);
   if (screenGoal) screenGoal.textContent = item.goal;
   if (screenInteractions) screenInteractions.innerHTML = listHtml(item.interactions);
   if (screenVisuals) screenVisuals.innerHTML = listHtml(item.visuals);
-  if (screenModelTags) screenModelTags.innerHTML = item.abilityTags.map((tag) => `<span>${tag}</span>`).join("");
+  if (screenModelTags) screenModelTags.innerHTML = item.abilityTags.map((tag) => renderIconTag(tag)).join("");
   if (prevButton) prevButton.disabled = index === 0;
   if (nextButton) nextButton.disabled = index === screens.length - 1;
   if (!exportMode) {
